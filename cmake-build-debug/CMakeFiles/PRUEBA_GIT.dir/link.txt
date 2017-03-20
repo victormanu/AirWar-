@@ -1,0 +1,1 @@
+/usr/bin/c++   -g   CMakeFiles/PRUEBA_GIT.dir/main.cpp.o  -o PRUEBA_GIT 

@@ -1,0 +1,3 @@
+/home/victork/CLionProjects/PRUEBA_GIT/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/victork/CLionProjects/PRUEBA_GIT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/victork/CLionProjects/PRUEBA_GIT/cmake-build-debug/CMakeFiles/PRUEBA_GIT.dir
