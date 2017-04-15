@@ -1,0 +1,79 @@
+package developer.control;
+import android.os.StrictMode;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+/**
+ *
+ * @author Victor Fuentes
+ *
+ */
+public class Cliente implements Runnable {
+
+    private final int _puerto = 2222; //Puerto para la conexión
+    private JSONObject _mensajeServidor; //Mensajes entrantes (recibidos) en el servidor
+    private Socket _client; //Socket del cliente
+    private ObjectOutputStream _salidaCliente; //Flujo de datos de salida
+    private ObjectInputStream _entradaCliente;
+    private String _mensaje;
+
+    private JSONObject _obj;
+
+    /**
+     * Este es el constructor de la clase
+     */
+    public Cliente(){}
+
+    public void ClienteConect(String _host) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            _client = new Socket(_host, _puerto);
+            _salidaCliente = new ObjectOutputStream(_client.getOutputStream());
+            Thread clienteThread = new Thread(this);//Corre el hilo que mantiene en escucha al cliente
+            clienteThread.start();
+            System.out.println("Conectado");
+        } catch (UnknownHostException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void run() {
+        try{
+            while(true) {
+                _entradaCliente = new ObjectInputStream(_client.getInputStream());
+                _mensajeServidor = (JSONObject)_entradaCliente.readObject();
+                _mensaje = (String) _mensajeServidor.get("Mensaje");
+                if(_mensaje.equals("Hecho")){
+                        System.out.println("Aceptado!!!");
+                }else{
+                        System.out.println("Rechazado!!!");
+                }
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Este método se encarga de enviar los datos al servidor
+     */
+    public void enviarDatos(int pMensaje) throws JSONException {
+        try {
+            _obj = new JSONObject();
+            _obj.put("Movimiento", pMensaje);
+            _salidaCliente.writeObject(_obj);
+            _salidaCliente.flush();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
